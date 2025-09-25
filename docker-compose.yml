@@ -1,0 +1,32 @@
+services:
+  db:
+    container_name: db
+    hostname: db
+    image: postgres:${POSTGRES_TAG:-17}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+        - pgdata:/var/lib/postgresql/data
+
+  app:
+    container_name: app
+    hostname: app
+    image: medodstesttask:1.0.0
+    build:
+      context: src
+    environment:
+      DATABASE_USERNAME: ${POSTGRES_USER:-postgres}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DATABASE_NAME: ${POSTGRES_DB:-postgres}
+      DATABASE_HOST: db
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+
+
+volumes:
+  pgdata:
